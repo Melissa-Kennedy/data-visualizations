@@ -1,0 +1,115 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-strong: var(--strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-block: var(--block);
+  --color-cell-border: var(--cell-border);
+  --color-highlight: var(--highlight);
+  --color-tooltip: var(--tooltip);
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Source Sans 3", Arial, sans-serif;
+  --font-grid: "Archivo", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --shadow-grid: 0 18px 45px var(--grid-shadow);
+  --shadow-active: 0 0 0 2px var(--accent), 0 0 14px var(--active-glow);
+  --shadow-tooltip: 0 8px 24px var(--grid-shadow);
+}
+
+:root {
+  --radius: 0.25rem;
+  --paper: #fdfcf8;
+  --ink: #1a1a1a;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: #f1f0e8;
+  --secondary-foreground: var(--ink);
+  --muted: #f1f0e8;
+  --muted-foreground: #6b6b64;
+  --accent: #b85c38;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.58 0.22 28);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: #e5e3db;
+  --strong: #2a2a28;
+  --input: #d1cfb9;
+  --ring: var(--accent);
+  --block: #1a1a1a;
+  --cell-border: #1a1a1a4d;
+  --highlight: oklch(0.85 0.055 45 / 0.28);
+  --tooltip: #ffffff;
+  --grid-shadow: oklch(0.18 0.01 250 / 0.14);
+  --active-glow: oklch(0.55 0.16 38 / 0.35);
+  --heat-start: rgb(205, 226, 251);
+  --heat-end: rgb(13, 54, 107);
+}
+
+
+@layer base {
+  * { border-color: var(--border); }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+  }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  ::selection { background: var(--accent); color: var(--accent-foreground); }
+}
+
+@utility heat-legend {
+  background: linear-gradient(90deg, var(--heat-start), var(--heat-end));
+}
+
+@utility story-link {
+  position: relative;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+@utility crossword-scroll {
+  scrollbar-color: var(--accent) var(--secondary);
+  scrollbar-width: thin;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
