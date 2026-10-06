@@ -1,0 +1,708 @@
+<title>Punctuation Pals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fraunces:opsz,wght,SOFT@9..144,600..800,100&family=Lexend:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: one lookup bar on top, a big "meet the mark" card (glyph tile + facts, sentence on handwriting paper), then a chip shelf of every mark. */
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --ink: #1b2236;
+    --muted: #586178;
+    --line: #dde3ee;
+    --accent: #2b59d9;
+    --accent-ink: #ffffff;
+    --rule: #9bb7ea;
+    --rule-mid: #e7a9a9;
+    --warn-bg: #fff3d6;
+    --warn-fg: #7a5200;
+
+    --blue-bg: #dcebff;   --blue-fg: #1f5fbf;
+    --coral-bg: #ffe2da;  --coral-fg: #b9402c;
+    --sun-bg: #fff0c2;    --sun-fg: #8a5f00;
+    --green-bg: #d9f3e3;  --green-fg: #1c7044;
+    --violet-bg: #ebe3ff; --violet-fg: #5636c0;
+    --teal-bg: #d3f0f1;   --teal-fg: #126a70;
+
+    --f-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --f-ui: "Lexend", "Segoe UI", system-ui, sans-serif;
+    --f-read: "Andika", "Lexend", "Comic Sans MS", system-ui, sans-serif;
+    --f-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+
+    --r-lg: 28px;
+    --r-md: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11141d; --surface: #191e2b; --ink: #eef1f7; --muted: #a3abc1; --line: #2d3446;
+      --accent: #7fa3ff; --accent-ink: #0f1424; --rule: #3c5687; --rule-mid: #7a4450;
+      --warn-bg: #3a2f12; --warn-fg: #f3cf75;
+      --blue-bg: #1a2a45;   --blue-fg: #8db8ff;
+      --coral-bg: #3b231f;  --coral-fg: #ff9e8a;
+      --sun-bg: #362c12;    --sun-fg: #f2c94c;
+      --green-bg: #15322a;  --green-fg: #74d6a0;
+      --violet-bg: #282146; --violet-fg: #bba8ff;
+      --teal-bg: #113439;   --teal-fg: #6fd3d8;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11141d; --surface: #191e2b; --ink: #eef1f7; --muted: #a3abc1; --line: #2d3446;
+    --accent: #7fa3ff; --accent-ink: #0f1424; --rule: #3c5687; --rule-mid: #7a4450;
+    --warn-bg: #3a2f12; --warn-fg: #f3cf75;
+    --blue-bg: #1a2a45;   --blue-fg: #8db8ff;
+    --coral-bg: #3b231f;  --coral-fg: #ff9e8a;
+    --sun-bg: #362c12;    --sun-fg: #f2c94c;
+    --green-bg: #15322a;  --green-fg: #74d6a0;
+    --violet-bg: #282146; --violet-fg: #bba8ff;
+    --teal-bg: #113439;   --teal-fg: #6fd3d8;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--f-ui);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 40px 64px;
+    display: grid;
+    gap: 28px;
+  }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Header */
+  .top { display: grid; gap: 6px; }
+  .eyebrow {
+    margin: 0; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-variation-settings: "SOFT" 100;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  h1 .q { color: var(--coral-fg); }
+  h1 .e { color: var(--blue-fg); }
+  .lede { margin: 4px 0 0; max-width: 58ch; color: var(--muted); font-size: 1.05rem; }
+
+  /* Finder */
+  .finder { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+  .finder input {
+    flex: 1 1 260px;
+    min-width: 0;
+    font: 500 1.35rem/1 var(--f-ui);
+    color: var(--ink);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+  }
+  .finder input::placeholder { color: var(--muted); opacity: 0.8; font-weight: 400; font-size: 1.05rem; }
+  .finder input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .btn {
+    font: 600 1rem/1 var(--f-ui);
+    border-radius: var(--r-md);
+    padding: 0 22px;
+    min-height: 56px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+  }
+  .btn:active { transform: translateY(1px) scale(0.98); }
+  .btn:focus-visible, .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--muted); }
+
+  .msg {
+    margin: -14px 0 0;
+    min-height: 0;
+    font-size: 0.98rem;
+  }
+  .msg:not(:empty) {
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+  }
+
+  /* Card */
+  .card {
+    --tint-bg: var(--blue-bg);
+    --tint-fg: var(--blue-fg);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 28px;
+    display: grid;
+    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    gap: 28px 36px;
+    box-shadow: 0 1px 0 var(--line), 0 18px 40px -28px color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+  .glyph-tile {
+    background: var(--tint-bg);
+    border-radius: 22px;
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+    align-self: start;
+    position: relative;
+    overflow: hidden;
+  }
+  .glyph {
+    font-family: var(--f-display);
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    font-weight: 700;
+    font-size: clamp(6rem, 18vw, 10rem);
+    line-height: 1;
+    color: var(--tint-fg);
+    white-space: nowrap;
+    transform-origin: center;
+  }
+  .glyph.small { font-size: clamp(4.5rem, 13vw, 7rem); }
+  .glyph-name {
+    position: absolute; left: 0; right: 0; bottom: 12px;
+    text-align: center; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--tint-fg); opacity: 0.8;
+  }
+  .info { min-width: 0; display: grid; gap: 18px; align-content: start; }
+  .job {
+    margin: 0; justify-self: start;
+    background: var(--tint-bg); color: var(--tint-fg);
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 5px 12px; border-radius: 999px;
+  }
+  .name-block { display: grid; gap: 2px; }
+  .name-block h2 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-variation-settings: "SOFT" 100;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .aka { margin: 0; color: var(--muted); font-size: 0.92rem; }
+  .def { margin: 0; font-size: 1.2rem; line-height: 1.5; max-width: 52ch; }
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+  }
+
+  .feels ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .feels li {
+    display: grid; justify-items: center; gap: 4px;
+    padding: 14px 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    text-align: center;
+  }
+  .feels .emo { font-family: var(--f-emoji); font-size: 2.5rem; line-height: 1.1; display: inline-block; }
+  .feels .word { font-size: 0.92rem; font-weight: 500; }
+
+  .voice-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .voice-box {
+    border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px 14px;
+    display: grid; gap: 8px; align-content: start; min-width: 0;
+  }
+  .voice-box .label { font-size: 0.78rem; font-weight: 600; color: var(--muted); }
+  .voice-box p { margin: 0; font-size: 0.95rem; line-height: 1.4; }
+  .pitch { width: 100%; max-width: 160px; height: 40px; display: block; }
+  .meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; max-width: 160px; height: 14px; }
+  .meter span { border-radius: 4px; background: var(--line); }
+  .meter span.on { background: var(--tint-fg); }
+
+  .example { grid-column: 1 / -1; min-width: 0; }
+  .lined {
+    position: relative;
+    margin: 0;
+    font-family: var(--f-read);
+    font-size: clamp(1.45rem, 4vw, 2.1rem);
+    line-height: 72px;
+    padding: 0 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background-color: var(--surface);
+    /* Primary handwriting paper: solid top line and baseline every 72px row */
+    background-image:
+      linear-gradient(to bottom, transparent 14px, var(--rule) 14px 15px, transparent 15px),
+      linear-gradient(to bottom, transparent 54px, var(--rule) 54px 56px, transparent 56px);
+    background-size: 100% 72px;
+    overflow-wrap: anywhere;
+  }
+  /* Dashed midline, masked down to a thin band in each row */
+  .lined::before {
+    content: ""; position: absolute; inset: 0 12px; pointer-events: none;
+    background: repeating-linear-gradient(to right, var(--rule-mid) 0 8px, transparent 8px 14px);
+    -webkit-mask: linear-gradient(to bottom, transparent 34px, #000 34px 36px, transparent 36px) 0 0 / 100% 72px repeat-y;
+            mask: linear-gradient(to bottom, transparent 34px, #000 34px 36px, transparent 36px) 0 0 / 100% 72px repeat-y;
+  }
+  .lined .txt { position: relative; z-index: 1; }
+  .lined mark {
+    background: var(--tint-bg);
+    color: var(--tint-fg);
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 0 0.12em;
+    margin: 0 0.02em;
+  }
+  .tip { margin: 12px 0 0; font-size: 0.95rem; color: var(--muted); }
+  .tip strong { color: var(--ink); font-weight: 600; }
+
+  /* Chips */
+  .all h2 {
+    margin: 0 0 12px;
+    font-family: var(--f-display); font-variation-settings: "SOFT" 100; font-weight: 700; font-size: 1.4rem;
+  }
+  .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .chip {
+    --tint-bg: var(--blue-bg); --tint-fg: var(--blue-fg);
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--r-md);
+    color: var(--ink);
+    font: 500 0.95rem/1.2 var(--f-ui);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.12s ease, transform 0.12s ease;
+  }
+  .chip:hover { border-color: var(--tint-fg); transform: translateY(-1px); }
+  .chip[aria-pressed="true"] { border-color: var(--tint-fg); background: var(--tint-bg); }
+  .chip .g {
+    flex: none; width: 40px; height: 40px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: var(--tint-bg); color: var(--tint-fg);
+    font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; line-height: 1;
+  }
+  .chip[aria-pressed="true"] .g { background: var(--surface); }
+
+  .foot { margin: 0; color: var(--muted); font-size: 0.85rem; }
+
+  /* Motion */
+  @keyframes pop { 0% { transform: scale(0.6) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.08) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+  @keyframes hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } }
+  .glyph.animate { animation: pop 0.45s cubic-bezier(.2,.8,.3,1.2); }
+  .feels li.animate .emo { animation: hop 0.5s ease; }
+  .feels li:nth-child(2).animate .emo { animation-delay: 0.08s; }
+  .feels li:nth-child(3).animate .emo { animation-delay: 0.16s; }
+  @media (prefers-reduced-motion: reduce) {
+    .glyph.animate, .feels li.animate .emo { animation: none; }
+    .btn, .chip { transition: none; }
+  }
+
+  @media (max-width: 720px) {
+    .wrap { padding-inline: 16px; padding-block: 28px 48px; gap: 22px; }
+    .card { grid-template-columns: minmax(0, 1fr); padding: 20px; gap: 22px; }
+    .glyph-tile { aspect-ratio: auto; min-height: 180px; }
+    .finder .btn { flex: 1 1 auto; }
+  }
+  @media (max-width: 420px) {
+    .voice-grid { grid-template-columns: minmax(0, 1fr); }
+    .feels .emo { font-size: 2.1rem; }
+  }
+</style>
+
+<main class="wrap">
+  <header class="top">
+    <p class="eyebrow">Grade 4 writing toolkit</p>
+    <h1>Punctuation Pals<span class="q">?</span><span class="e">!</span></h1>
+    <p class="lede">Type a punctuation mark to meet it. See what it does, how it feels, and how it sounds when you read it out loud.</p>
+  </header>
+
+  <form id="finder" class="finder" novalidate>
+    <label for="markInput" class="sr">Type a punctuation mark or its name</label>
+    <input id="markInput" name="markInput" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a mark, like ? or !">
+    <button type="submit" class="btn btn-primary">Show me</button>
+    <button type="button" id="surprise" class="btn btn-ghost">Surprise me</button>
+  </form>
+  <p id="msg" class="msg" role="status" aria-live="polite"></p>
+
+  <article id="card" class="card" aria-live="polite">
+    <div class="glyph-tile">
+      <span id="glyph" class="glyph" aria-hidden="true">?</span>
+      <span id="glyphName" class="glyph-name"></span>
+    </div>
+
+    <div class="info">
+      <p id="job" class="job"></p>
+      <div class="name-block">
+        <h2 id="name"></h2>
+        <p id="aka" class="aka"></p>
+      </div>
+      <p id="def" class="def"></p>
+
+      <div class="feels">
+        <h3>How it feels</h3>
+        <ul id="feels"></ul>
+      </div>
+
+      <div>
+        <h3>Reading it out loud</h3>
+        <div class="voice-grid">
+          <div class="voice-box">
+            <span class="label">Your voice</span>
+            <svg id="pitch" class="pitch" viewBox="0 0 160 40" aria-hidden="true"></svg>
+            <p id="voiceText"></p>
+          </div>
+          <div class="voice-box">
+            <span class="label">How long to pause</span>
+            <div id="meter" class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <p id="pauseText"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>See it in a sentence</h3>
+      <p class="lined"><span id="example" class="txt"></span></p>
+      <p id="tip" class="tip"></p>
+    </div>
+  </article>
+
+  <section class="all" aria-labelledby="allHead">
+    <h2 id="allHead">All the marks</h2>
+    <div id="chips" class="chips"></div>
+  </section>
+
+  <p class="foot">Tip: you can also type a name, like “comma” or “question mark”.</p>
+</main>
+
+<script>
+(function () {
+  // {x} in an example marks the punctuation to highlight.
+  var MARKS = [
+    {
+      id: "period", glyph: ".", name: "Period", aka: "Also called a full stop", hue: "blue",
+      job: "Ends a sentence",
+      def: "A period tells the reader that a thought is finished. Time to stop and take a breath.",
+      feels: [["😌", "Calm"], ["🛑", "Stop"], ["✅", "Done"]],
+      pitch: "down", voice: "Goes down at the end, then stops.",
+      pause: 3,
+      example: "We ate pizza for lunch{.}",
+      tip: "Every sentence that tells something ends with a period."
+    },
+    {
+      id: "question", glyph: "?", name: "Question Mark", aka: "The asking mark", hue: "coral",
+      job: "Ends a question",
+      def: "A question mark shows you are asking something and want an answer.",
+      feels: [["🤔", "Curious"], ["🧐", "Wondering"], ["🙋", "Asking"]],
+      pitch: "up", voice: "Goes up at the end, like you are waiting for an answer.",
+      pause: 3,
+      example: "Can we go to the park today{?}",
+      tip: "Questions often start with who, what, where, when, why, or how."
+    },
+    {
+      id: "exclamation", glyph: "!", name: "Exclamation Mark", aka: "Also called an exclamation point", hue: "sun",
+      job: "Shows a big feeling",
+      def: "An exclamation mark shows strong feelings like excitement, surprise, or a loud voice.",
+      feels: [["🤩", "Excited"], ["😲", "Surprised"], ["📣", "Loud"]],
+      pitch: "loud", voice: "Gets louder and stronger.",
+      pause: 3,
+      example: "We won the game{!}",
+      tip: "In school writing, one ! is enough. Save it for really big feelings."
+    },
+    {
+      id: "comma", glyph: ",", name: "Comma", aka: "The little pause", hue: "green",
+      job: "Makes a short pause",
+      def: "A comma is a tiny pause. It separates items in a list and helps break up long sentences.",
+      feels: [["🙂", "Relaxed"], ["⏸️", "Pausing"], ["🧺", "Listing"]],
+      pitch: "flat", voice: "Stays steady. Take a tiny pause, then keep going.",
+      pause: 1,
+      example: "I packed apples{,} grapes{,} and a sandwich.",
+      tip: "Use commas between things in a list."
+    },
+    {
+      id: "apostrophe", glyph: "’", name: "Apostrophe", aka: "Looks like a floating comma", hue: "violet",
+      job: "Shows owning or squeezing",
+      def: "An apostrophe shows that something belongs to someone. It also squeezes two words into one, like it is → it’s.",
+      feels: [["🎒", "Owning"], ["🤏", "Squeezing"], ["🤝", "Belonging"]],
+      pitch: "flat", voice: "Read the word normally. No change.",
+      pause: 0,
+      example: "It{’}s Maya{’}s backpack.",
+      tip: "Maya’s backpack means the backpack belongs to Maya."
+    },
+    {
+      id: "quotes", glyph: "“ ”", name: "Quotation Marks", aka: "Also called quotes or speech marks", hue: "teal",
+      job: "Shows someone talking",
+      def: "Quotation marks go around the exact words someone says, like a speech bubble in a comic.",
+      feels: [["🗣️", "Talking"], ["💬", "Saying"], ["👂", "Listening"]],
+      pitch: "flat", voice: "Read the words inside in the speaker’s voice.",
+      pause: 1,
+      example: "{“}Let’s go!{”} shouted Leo.",
+      tip: "Quotation marks come in pairs: one to open and one to close."
+    },
+    {
+      id: "colon", glyph: ":", name: "Colon", aka: "Two dots stacked up", hue: "blue",
+      job: "Introduces what comes next",
+      def: "A colon says “Get ready, here it comes!” It often comes right before a list or an explanation.",
+      feels: [["👉", "Pointing"], ["😃", "Ready"], ["📋", "Listing"]],
+      pitch: "flat", voice: "Pause, then get ready for what comes next.",
+      pause: 2,
+      example: "Bring three things{:} a pencil, a ruler, and an eraser.",
+      tip: "The words before a colon should make a whole sentence."
+    },
+    {
+      id: "semicolon", glyph: ";", name: "Semicolon", aka: "Half period, half comma", hue: "violet",
+      job: "Joins two sentences",
+      def: "A semicolon joins two complete sentences that are close friends and belong together.",
+      feels: [["🔗", "Linked"], ["⚖️", "Balanced"], ["🤓", "Thoughtful"]],
+      pitch: "flat", voice: "Pause a bit longer than a comma.",
+      pause: 2,
+      example: "It was raining{;} we stayed inside.",
+      tip: "Each side of a semicolon could be its own sentence."
+    },
+    {
+      id: "hyphen", glyph: "-", name: "Hyphen", aka: "The short line", hue: "green",
+      job: "Glues words together",
+      def: "A hyphen is a short line that glues words together to make one word.",
+      feels: [["🧩", "Joining"], ["🤗", "Together"], ["🧱", "Building"]],
+      pitch: "flat", voice: "No pause. Read the joined words as one.",
+      pause: 0,
+      example: "I have twenty{-}two stickers.",
+      tip: "Numbers from twenty-one to ninety-nine use a hyphen."
+    },
+    {
+      id: "dash", glyph: "—", name: "Dash", aka: "The long line", hue: "coral",
+      job: "Adds a dramatic pause",
+      def: "A dash is a long line that adds a dramatic pause or a surprise. It is longer than a hyphen.",
+      feels: [["😮", "Surprise"], ["⚡", "Sudden"], ["🎭", "Dramatic"]],
+      pitch: "gap", voice: "Stop suddenly, then say the surprise.",
+      pause: 2,
+      example: "I opened the box and found {—} a puppy!",
+      tip: "On a keyboard, you can type two hyphens -- to make a dash."
+    },
+    {
+      id: "ellipsis", glyph: "…", name: "Ellipsis", aka: "Three dots in a row", hue: "teal",
+      job: "Trails off or builds suspense",
+      def: "An ellipsis is three dots that show someone trailing off, waiting, or building suspense.",
+      feels: [["😬", "Suspense"], ["⏳", "Waiting"], ["🤷", "Unsure"]],
+      pitch: "trail", voice: "Fades out slowly, like you’re not done yet.",
+      pause: 4,
+      example: "I opened the door slowly and saw{…}",
+      tip: "Say it like this: el-lip-sis."
+    },
+    {
+      id: "parentheses", glyph: "( )", name: "Parentheses", aka: "Also called round brackets", hue: "sun",
+      job: "Holds extra information",
+      def: "Parentheses hug extra information. You could take the words out and the sentence still makes sense.",
+      feels: [["🤫", "Whispering"], ["🤗", "Hugging"], ["📝", "Side note"]],
+      pitch: "soft", voice: "Say the words inside a little quieter, like a whisper.",
+      pause: 1,
+      example: "My cat {(}her name is Pickles{)} loves boxes.",
+      tip: "Parentheses come in pairs: one opens and one closes."
+    }
+  ];
+
+  var ALIASES = {
+    ".": "period", "period": "period", "full stop": "period", "fullstop": "period", "dot": "period", "stop": "period",
+    "?": "question", "question": "question", "question mark": "question", "questionmark": "question",
+    "!": "exclamation", "exclamation": "exclamation", "exclamation mark": "exclamation", "exclamation point": "exclamation", "exclamationmark": "exclamation",
+    ",": "comma", "comma": "comma", "commas": "comma",
+    "'": "apostrophe", "’": "apostrophe", "‘": "apostrophe", "`": "apostrophe", "apostrophe": "apostrophe",
+    "\"": "quotes", "“": "quotes", "”": "quotes", "\"\"": "quotes", "“”": "quotes", "“ ”": "quotes", "„": "quotes",
+    "quotes": "quotes", "quote": "quotes", "quotation": "quotes", "quotation marks": "quotes", "quotation mark": "quotes", "speech marks": "quotes",
+    ":": "colon", "colon": "colon",
+    ";": "semicolon", "semicolon": "semicolon", "semi colon": "semicolon", "semi-colon": "semicolon",
+    "-": "hyphen", "hyphen": "hyphen",
+    "—": "dash", "–": "dash", "--": "dash", "dash": "dash", "em dash": "dash", "en dash": "dash",
+    "...": "ellipsis", "…": "ellipsis", "ellipsis": "ellipsis", "dots": "ellipsis", "three dots": "ellipsis", "dot dot dot": "ellipsis",
+    "(": "parentheses", ")": "parentheses", "()": "parentheses", "( )": "parentheses",
+    "parentheses": "parentheses", "parenthesis": "parentheses", "brackets": "parentheses", "round brackets": "parentheses", "bracket": "parentheses"
+  };
+
+  var PAUSE_WORDS = ["No pause", "A tiny pause", "A medium pause", "A full stop", "A long, trailing pause"];
+
+  var PITCH = {
+    down:  { d: "M8 12 C 60 10, 100 12, 152 32", w: 4 },
+    up:    { d: "M8 30 C 60 32, 100 28, 152 8", w: 4 },
+    loud:  { d: "M8 28 C 40 26, 70 6, 152 6", w: 7 },
+    flat:  { d: "M8 20 L152 20", w: 4 },
+    soft:  { d: "M8 26 L152 26", w: 2.5, dash: "6 6" },
+    gap:   { d: "M8 20 L64 20 M96 20 L152 20", w: 4 },
+    trail: { d: "M8 16 C 60 16, 100 22, 152 32", w: 4, dash: "1 10" }
+  };
+
+  var byId = {};
+  MARKS.forEach(function (m) { byId[m.id] = m; });
+
+  var $ = function (id) { return document.getElementById(id); };
+  var card = $("card"), glyph = $("glyph"), input = $("markInput"), msg = $("msg");
+  var currentId = null;
+
+  function setTint(el, hue) {
+    el.style.setProperty("--tint-bg", "var(--" + hue + "-bg)");
+    el.style.setProperty("--tint-fg", "var(--" + hue + "-fg)");
+  }
+
+  function renderExample(target, text) {
+    target.textContent = "";
+    var parts = text.split(/(\{[^}]*\})/);
+    parts.forEach(function (p) {
+      if (!p) return;
+      if (p.charAt(0) === "{" && p.charAt(p.length - 1) === "}") {
+        var mk = document.createElement("mark");
+        mk.textContent = p.slice(1, -1);
+        target.appendChild(mk);
+      } else {
+        target.appendChild(document.createTextNode(p));
+      }
+    });
+  }
+
+  function renderPitch(kind) {
+    var p = PITCH[kind] || PITCH.flat;
+    var svg = $("pitch");
+    var ns = "http://www.w3.org/2000/svg";
+    svg.textContent = "";
+    var path = document.createElementNS(ns, "path");
+    path.setAttribute("d", p.d);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "var(--tint-fg)");
+    path.setAttribute("stroke-width", p.w);
+    path.setAttribute("stroke-linecap", "round");
+    if (p.dash) path.setAttribute("stroke-dasharray", p.dash);
+    svg.appendChild(path);
+  }
+
+  function restart(el) {
+    el.classList.remove("animate");
+    void el.offsetWidth;
+    el.classList.add("animate");
+  }
+
+  function show(id, opts) {
+    var m = byId[id];
+    if (!m) return;
+    currentId = id;
+    setTint(card, m.hue);
+
+    glyph.textContent = m.glyph;
+    glyph.classList.toggle("small", m.glyph.length > 1);
+    $("glyphName").textContent = m.name;
+    $("job").textContent = m.job;
+    $("name").textContent = m.name;
+    $("aka").textContent = m.aka;
+    $("def").textContent = m.def;
+
+    var ul = $("feels");
+    ul.textContent = "";
+    m.feels.forEach(function (f) {
+      var li = document.createElement("li");
+      var e = document.createElement("span");
+      e.className = "emo"; e.textContent = f[0]; e.setAttribute("aria-hidden", "true");
+      var w = document.createElement("span");
+      w.className = "word"; w.textContent = f[1];
+      li.appendChild(e); li.appendChild(w);
+      ul.appendChild(li);
+    });
+
+    renderPitch(m.pitch);
+    $("voiceText").textContent = m.voice;
+    var bars = $("meter").children;
+    for (var i = 0; i < bars.length; i++) bars[i].classList.toggle("on", i < m.pause);
+    $("pauseText").textContent = PAUSE_WORDS[m.pause] + ".";
+
+    renderExample($("example"), m.example);
+    $("tip").innerHTML = "";
+    var strong = document.createElement("strong");
+    strong.textContent = "Tip: ";
+    $("tip").appendChild(strong);
+    $("tip").appendChild(document.createTextNode(m.tip));
+
+    var chips = document.querySelectorAll(".chip");
+    chips.forEach(function (c) { c.setAttribute("aria-pressed", c.dataset.id === id ? "true" : "false"); });
+
+    if (!opts || !opts.quiet) {
+      restart(glyph);
+      Array.prototype.forEach.call(ul.children, restart);
+    }
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+  }
+
+  function lookup(raw) {
+    var v = raw.trim().replace(/\s+/g, " ");
+    var key = v.toLowerCase();
+    if (!v) return { error: "Type a punctuation mark first, like ? or !" };
+    if (ALIASES[key]) return { id: ALIASES[key] };
+    // "!!!" or "???" → one mark, with a gentle note
+    if (/^([!?])\1+$/.test(v)) {
+      return { id: ALIASES[v.charAt(0)], note: "One " + v.charAt(0) + " is all you need. Here it is:" };
+    }
+    if (/^\.{4,}$/.test(v)) return { id: "ellipsis", note: "An ellipsis always has exactly three dots." };
+    if (/^-{3,}$/.test(v)) return { id: "dash" };
+    if (/^[\p{L}\p{N} ]+$/u.test(v)) {
+      return { error: "“" + v + "” is made of letters or numbers. Punctuation marks are the little symbols between words, like , or . Try one below!" };
+    }
+    if (/\p{Extended_Pictographic}/u.test(v)) {
+      return { error: "That’s an emoji! Emojis are fun, but they aren’t punctuation. Try a mark like ? or !" };
+    }
+    return { error: "“" + v + "” isn’t one of our punctuation pals yet. Try one of the marks below." };
+  }
+
+  function buildChips() {
+    var wrap = $("chips");
+    MARKS.forEach(function (m) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.dataset.id = m.id;
+      b.setAttribute("aria-pressed", "false");
+      setTint(b, m.hue);
+      var g = document.createElement("span");
+      g.className = "g"; g.textContent = m.glyph; g.setAttribute("aria-hidden", "true");
+      var n = document.createElement("span");
+      n.textContent = m.name;
+      b.appendChild(g); b.appendChild(n);
+      b.addEventListener("click", function () {
+        msg.textContent = "";
+        input.value = m.glyph.replace(" ", "");
+        show(m.id);
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  $("finder").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var r = lookup(input.value);
+    if (r.error) {
+      msg.textContent = r.error;
+      return;
+    }
+    msg.textContent = r.note || "";
+    show(r.id);
+  });
+
+  input.addEventListener("input", function () { if (msg.textContent) msg.textContent = ""; });
+
+  $("surprise").addEventListener("click", function () {
+    var pool = MARKS.filter(function (m) { return m.id !== currentId; });
+    var m = pool[Math.floor(Math.random() * pool.length)];
+    msg.textContent = "";
+    input.value = m.glyph.replace(" ", "");
+    show(m.id);
+  });
+
+  buildChips();
+  var start = (location.hash || "").slice(1);
+  if (!byId[start]) start = "question";
+  input.value = byId[start].glyph.replace(" ", "");
+  show(start, { quiet: true });
+})();
+</script>
