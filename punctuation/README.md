@@ -1,6 +1,6 @@
 # Punctuation Pals
 
-**Lovable project: [lovable.dev/projects/bc399feb-7844-4b5b-af07-d893e0682c12](https://lovable.dev/projects/bc399feb-7844-4b5b-af07-d893e0682c12)**
+**Live app: [punctuation-pals-playground.lovable.app](https://punctuation-pals-playground.lovable.app)**
 
 A kid-friendly punctuation explorer for a grade 4 reader. Type a punctuation
 mark (or its name, like "comma") and it shows up on a card that explains:
@@ -35,8 +35,8 @@ colon, semicolon, hyphen, dash, ellipsis and parentheses.
 |---|---|
 | [`prototype/`](./prototype) | The original single-file HTML version that the Lovable app was built from. No build step and no dependencies other than Google Fonts. Open `index.html` in a browser. |
 
-The production app was built with [Lovable](https://lovable.dev) from the
-prototype, and lives in the Lovable project linked above.
+The live app was built with [Lovable](https://lovable.dev) from the
+prototype and is hosted at the link above.
 
 ## Design notes
 

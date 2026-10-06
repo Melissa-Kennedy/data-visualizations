@@ -18,7 +18,7 @@ extraction) — see [`crosswordese/README.md`](./crosswordese/README.md).
 
 ### [Punctuation Pals](./punctuation)
 
-**Lovable project: [lovable.dev/projects/bc399feb-7844-4b5b-af07-d893e0682c12](https://lovable.dev/projects/bc399feb-7844-4b5b-af07-d893e0682c12)**
+**Live: [punctuation-pals-playground.lovable.app](https://punctuation-pals-playground.lovable.app)**
 
 A kid-friendly punctuation explorer for a grade 4 reader. Type a mark like
 `?` or `!` to see what it does, how it feels in emojis, how it sounds read
